@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaflet Map Demo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha384-5u5eJx14znuuKpjsqvV7dA5v8BDi7LMTGNoXqaXlCflBv2iWHSIgTx3/KqBtMZ0v"
+          crossorigin=""/>
+    <style>
+        #mapid {
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+<div id="mapid"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha384-jnKnSg+PDJ6YXHivU+16BkG4wU4Q6UJf6s0a2+Dqmkh/Rq3G00kQRvJx+AmEwJ36"
+        crossorigin=""></script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    // Define the Leaflet map and set its view to the specified location and zoom level
+    var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+
+    // Define the Mapbox tile layer and add it to the map
+    var accessToken = /*[[${accessToken}]]*/ '';
+    var tileUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + accessToken;
+    var layer = L.tileLayer(tileUrl, {
+        attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1
+    }).addTo(mymap);
+
+    // Define an array of markers and their associated availability ratings
+    var markers = /*[[${markers}]]*/ [];
+
+    // Loop through the array of markers and add them to the map with popup windows that display their availability ratings
+    for (var i = 0; i < markers.length; i++) {
+        var marker = L.marker([markers[i].lat, markers[i].lng]).addTo(mymap);
+        marker.bindPopup('<b>Availability rating:</b> ' + markers[i].availability);
+    }
+
+    /*]]>*/
+</script>
+</body>
+</html>
